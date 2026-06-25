@@ -31,6 +31,8 @@ const canvas = document.querySelector("#drawingCanvas");
 const ctx = canvas.getContext("2d");
 const drawingLayer = document.createElement("canvas");
 const drawingCtx = drawingLayer.getContext("2d");
+const lineLayer = document.createElement("canvas");
+const lineCtx = lineLayer.getContext("2d");
 const palette = document.querySelector("#palette");
 const brushSizeInput = document.querySelector("#brushSize");
 const eraserButton = document.querySelector("#eraserButton");
@@ -142,10 +144,42 @@ function resizeCanvas() {
   canvas.height = cssPixels(displayHeight);
   drawingLayer.width = canvas.width;
   drawingLayer.height = canvas.height;
+  lineLayer.width = canvas.width;
+  lineLayer.height = canvas.height;
   ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
   drawingCtx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
   state.imageBox = { x: 0, y: 0, width: displayWidth, height: displayHeight };
+  buildLineLayer();
   renderCanvas();
+}
+
+function buildLineLayer() {
+  lineCtx.setTransform(1, 0, 0, 1, 0, 0);
+  lineCtx.clearRect(0, 0, lineLayer.width, lineLayer.height);
+  if (!state.image) return;
+
+  lineCtx.drawImage(state.image, 0, 0, lineLayer.width, lineLayer.height);
+  const imageData = lineCtx.getImageData(0, 0, lineLayer.width, lineLayer.height);
+  const pixels = imageData.data;
+
+  for (let index = 0; index < pixels.length; index += 4) {
+    const red = pixels[index];
+    const green = pixels[index + 1];
+    const blue = pixels[index + 2];
+    const alpha = pixels[index + 3];
+    const darkness = 255 - (red + green + blue) / 3;
+
+    if (alpha > 0 && darkness > 65) {
+      pixels[index] = 17;
+      pixels[index + 1] = 17;
+      pixels[index + 2] = 17;
+      pixels[index + 3] = Math.min(255, darkness * 2.5);
+    } else {
+      pixels[index + 3] = 0;
+    }
+  }
+
+  lineCtx.putImageData(imageData, 0, 0);
 }
 
 function renderCanvas() {
@@ -153,6 +187,7 @@ function renderCanvas() {
   if (!state.image) return;
   ctx.drawImage(state.image, 0, 0, state.imageBox.width, state.imageBox.height);
   ctx.drawImage(drawingLayer, 0, 0, state.imageBox.width, state.imageBox.height);
+  ctx.drawImage(lineLayer, 0, 0, state.imageBox.width, state.imageBox.height);
 }
 
 function clearDrawing() {
