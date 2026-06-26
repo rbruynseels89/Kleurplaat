@@ -15,7 +15,7 @@ const state = {
   sheets: [],
   activeSheet: null,
   selectedColor: paletteColors[0].value,
-  brushSize: 36,
+  brushSize: 14,
   erasing: false,
   drawing: false,
   image: null,

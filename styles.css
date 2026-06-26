@@ -164,6 +164,11 @@ p {
   width: 64px;
 }
 
+.tool-label {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
 .text-button {
   font-size: 1rem;
   padding: 0 18px;
@@ -304,5 +309,26 @@ canvas {
 
   .brush-control {
     min-height: 56px;
+  }
+}
+
+@media (max-width: 640px) {
+  .tools {
+    align-items: stretch;
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+
+  .palette {
+    gap: 10px;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, 54px);
+    grid-template-rows: repeat(2, 54px);
+    justify-content: center;
+    overflow: visible;
+    padding: 2px 4px;
+  }
+
+  .brush-control {
+    min-width: 0;
   }
 }
