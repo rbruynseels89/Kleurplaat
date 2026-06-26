@@ -13,15 +13,23 @@
       "file": "kleurplaten/mama1.png"
     },
     {
-      "title": "Tante Hellie",
+      "title": "Opa",
       "file": "kleurplaten/opa1.png"
     },
     {
-      "title": "Tante Hellie",
+      "title": "Omi",
       "file": "kleurplaten/omi1.png"
     },
     {
-      "title": "Tante Hellie",
+      "title": "Mama en papa",
+      "file": "kleurplaten/mamaenpapa1.png"
+    },
+    {
+      "title": "Bami",
+      "file": "kleurplaten/bami1.png"
+    },
+    {
+      "title": "Woezel en Pip",
       "file": "kleurplaten/woezel1.png"
     }
   ]
