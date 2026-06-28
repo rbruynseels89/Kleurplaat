@@ -41,6 +41,51 @@ function cssPixels(value) {
   return Math.max(1, Math.floor(value * window.devicePixelRatio));
 }
 
+function preventPageZoom() {
+  let lastTouchEnd = 0;
+
+  document.addEventListener(
+    "touchstart",
+    (event) => {
+      if (event.touches.length > 1) event.preventDefault();
+    },
+    { passive: false },
+  );
+
+  document.addEventListener(
+    "touchend",
+    (event) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) event.preventDefault();
+      lastTouchEnd = now;
+    },
+    { passive: false },
+  );
+
+  ["gesturestart", "gesturechange", "gestureend"].forEach((eventName) => {
+    document.addEventListener(
+      eventName,
+      (event) => {
+        event.preventDefault();
+      },
+      { passive: false },
+    );
+  });
+
+  document.addEventListener(
+    "wheel",
+    (event) => {
+      if (event.ctrlKey) event.preventDefault();
+    },
+    { passive: false },
+  );
+
+  document.addEventListener("keydown", (event) => {
+    if (!(event.ctrlKey || event.metaKey)) return;
+    if (["+", "-", "=", "0"].includes(event.key)) event.preventDefault();
+  });
+}
+
 async function loadSheets() {
   try {
     const response = await fetch(manifestUrl, { cache: "no-store" });
@@ -295,4 +340,5 @@ window.addEventListener("resize", () => {
 });
 
 renderPalette();
+preventPageZoom();
 loadSheets();
